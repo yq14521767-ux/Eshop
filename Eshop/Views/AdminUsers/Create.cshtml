@@ -1,0 +1,46 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model Eshop.Models.User
+
+@{
+	ViewData["Title"] = "添加用户";
+}
+
+<div class="row justify-content-center">
+	<div class="col-12 col-md-8 col-lg-5">
+		<div class="card shadow-sm card-form">
+			<div class="card-body">
+
+				<div class="page-header">
+					<h2 class="m-0">添加用户</h2>
+					<a asp-action="Index" class="btn btn-outline-secondary">返回</a>
+				</div>
+
+				<form asp-action="Create" method="post" class="card shadow-sm card-form p-3" novalidate>
+					@Html.AntiForgeryToken()
+					<div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+					<div class="mb-3">
+						<label class="form-label form-label-required">用户名</label>
+						<input asp-for="UserName" class="form-control" autocomplete="username" />
+						<span asp-validation-for="UserName" class="text-danger"></span>
+					</div>
+					<div class="mb-3">
+						<label class="form-label form-label-required" for="password">密码</label>
+						<input id="password" name="password" type="password" class="form-control" autocomplete="new-password" />
+					</div>
+					<div class="d-grid gap-2 d-sm-flex">
+						<button asp-controller="AdminUsers" asp-action="Create" type="submit" class="btn btn-primary">添加</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}

@@ -1,0 +1,71 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model IEnumerable<Eshop.Models.Product>
+
+@{
+	ViewData["Title"] = "商品管理";
+}
+
+<div class="page-header">
+	<h2 class="m-0">商品管理</h2>
+	<a class="btn btn-success" asp-controller="AdminProducts" asp-action="Create">添加商品</a>
+</div>
+
+<table class="table table-hover table-bordered align-middle">
+	<thead>
+		<tr>
+			<th>图片</th>
+			<th>名称</th>
+			<th>价格</th>
+			<th>库存</th>
+			<th>描述</th>
+			<th>操作</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		@foreach(var p in Model)
+		{
+			<tr>
+				<td style="width:120px;">
+					@if (!string.IsNullOrEmpty(p.ImageUrl))
+					{
+						<img class="img-thumbnail" src="@p.ImageUrl" alt="@p.Name" style="max-width:100px; max-height:100px;" />
+					}
+					else
+					{
+						<span class="text-muted">暂无此图</span>
+					}
+				</td>
+
+				<td>@p.Name</td>
+				<td>@p.Price.ToString("C")</td>
+				<td>@p.Stock</td>
+
+				<td>
+					@if (!string.IsNullOrEmpty(p.Description))
+					{
+						@p.Description.Substring(0, Math.Min(p.Description.Length, 30))
+						@(p.Description.Length > 50 ? "..." : "")
+					}
+				</td>
+
+				<td>
+					<div class="table-actions">
+						<a class="btn btn-primary btn-sm"
+						   asp-controller="AdminProducts"
+						   asp-action="Edit"
+						   asp-route-id="@p.Id">编辑</a>
+						<a class="btn btn-danger btn-sm"
+						   asp-controller="AdminProducts"
+						   asp-action="Delete"
+						   asp-route-id="@p.Id"
+						   onclick="return confirm('确定要删除此商品吗？');">删除</a>
+					</div>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

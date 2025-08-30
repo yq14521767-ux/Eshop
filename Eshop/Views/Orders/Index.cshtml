@@ -1,0 +1,51 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model IEnumerable<Eshop.Models.Order>
+
+@{
+	ViewData["Title"] = "我的订单";
+}
+
+<div class="page-header">
+	<h2 class="m-0">我的订单</h2>
+</div>
+
+<table class="table table-hover table-bordered align-middle">
+	<thead>
+		<tr>
+			<th>订单号</th>
+			<th>下单时间</th>
+			<th>总金额</th>
+			<th>状态</th>
+			<th>操作</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		@foreach(var order in Model)
+		{
+			<tr>
+				<td>@order.Id</td>
+				<td>@order.OrderDate</td>
+				<td>@order.TotalAmount.ToString("C")</td>
+				<td>@order.Status</td>
+				<td>
+					<div class="table-actions">
+						<a asp-action="Details" asp-route-id="@order.Id" class="btn btn-info btn-sm">查看详情</a>
+						@{
+							if(order.Status == OrderStatus.待付款)
+							{
+								<a asp-action="Pay" asp-route-id="@order.Id" class="btn btn-success btn-sm">去付款</a>
+							}else if(order.Status == OrderStatus.待收货)
+							{
+								<a asp-action="Confirm" asp-route-id="@order.Id" class="btn btn-primary btn-sm">确认收货</a>
+							}
+						}
+					</div>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

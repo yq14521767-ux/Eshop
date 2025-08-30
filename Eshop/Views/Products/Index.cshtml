@@ -1,0 +1,57 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model IEnumerable<Eshop.Models.Product>
+
+@{
+    ViewData["Title"] = "商品列表";
+}
+
+@if (TempData["Success"] != null)
+{
+    <script>
+        alert('@Html.Raw(TempData["Success"])');
+         @{
+             TempData.Remove("Success");
+         }
+    </script>
+}
+
+<div class="page-header">
+    <h2 class="m-0">商品列表</h2>
+</div>
+
+<div class="row g-3">
+    @foreach(var item in Model)
+    {
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="card h-100">
+                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                {
+                    <img class="card-img-top" src="@item.ImageUrl" alt="@item.Name" />
+                }
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">@item.Name</h5>
+                    <p class="card-text text-danger fw-semibold mb-3">¥@item.Price.ToString("F2")</p>
+                    <div class="mt-auto d-grid gap-2">
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">查看详情</a>
+                        <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="productId" value="@item.Id" />
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control" name="quantity" value="1" min="1" max="@item.Stock" />
+                                <button type="submit" class="btn btn-primary">加入购物车</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (ViewBag.Success != null)
+{
+    <div class="alert alert-info mt-3">@ViewBag.Success</div>
+}

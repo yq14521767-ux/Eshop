@@ -1,0 +1,67 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model Eshop.Models.Product
+
+@{
+	ViewData["Title"] = "编辑商品";
+}
+
+<div class="row justify-content-center">
+	<div class="col-12 col-md-8 col-lg-5">
+		<div class="card shadow-sm card-form">
+			<div class="card-body">
+
+				<div class="page-header">
+					<h2 class="m-0">编辑商品</h2>
+					<a asp-action="Index" class="btn btn-outline-secondary">返回</a>
+				</div>
+
+				<form asp-controller="AdminProducts" asp-action="Edit" method="post" class="card shadow-sm card-form p-3">
+					<input type="hidden" asp-for="Id" />
+
+					<div class="mb-3">
+						<label class="form-label form-label-required" asp-for="Name">商品名称</label>
+						<input asp-for="Name" class="form-control" />
+						<span asp-validation-for="Name" class="text-danger"></span>
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label form-label-required" asp-for="Price">商品价格</label>
+						<input asp-for="Price" class="form-control" />
+						<span asp-validation-for="Price" class="text-danger"></span>
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label form-label-required" asp-for="Stock">商品库存</label>
+						<input asp-for="Stock" type="number" min="0" step="1" class="form-control" />
+						<span asp-validation-for="Stock" class="text-danger"></span>
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label" asp-for="Description">商品描述</label>
+						<textarea asp-for="Description" class="form-control" rows="4"></textarea>
+						<span asp-validation-for="Description" class="text-danger"></span>
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label" asp-for="ImageUrl">商品图片URL</label>
+						<input asp-for="ImageUrl" class="form-control" />
+						<span asp-validation-for="ImageUrl" class="text-danger"></span>
+					</div>
+
+					<div class="d-grid gap-2 d-sm-flex">
+						<button type="submit" class="btn btn-primary">保存</button>
+					</div>
+
+				</form>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts{
+	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

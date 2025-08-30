@@ -1,0 +1,80 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model Eshop.Models.Cart
+
+@{
+	ViewData["Title"] = "购物车";
+}
+
+<div class="page-header">
+	<h2 class="m-0">🛒 我的购物车</h2>
+</div>
+
+@if (TempData["Error"] != null)
+{
+	<div class="alert alert-warning">
+		@TempData["Error"]
+	</div>
+}
+
+@if (Model.CartItems.Count == 0)
+{
+	<div class="alert alert-info">购物车是空的，<a class="alert-link" asp-controller="Products" asp-action="Index">去挑几件商品吧 →</a></div>
+}
+else
+{
+	<table class="table table-hover table-bordered align-middle">
+		<thead>
+			<tr>
+				<th>商品</th>
+				<th>单价</th>
+				<th>数量</th>
+				<th>小计</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			@foreach (var item in Model.CartItems)
+			{
+				<tr>
+					<td>@item.Product?.Name</td>
+					<td>@(item.Product != null ? item.Product.Price.ToString("F2") : "0.00")</td>
+					<td>@item.Quantity</td>
+					<td>@(item.Product != null ? (item.Quantity * item.Product.Price).ToString("F2") : "0.00")</td>
+					<td>
+						<div class="table-actions">
+							<a asp-action="RemoveFromCart" asp-route-itemId="@item.Id" class="btn btn-danger btn-sm">删除</a>
+						</div>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+
+	<div class="d-flex justify-content-between align-items-center">
+		<div>
+			<a asp-controller="Products" asp-action="Index" class="btn btn-secondary">继续购物</a>
+		</div>
+
+		<div>
+			@{
+				var total = Model.CartItems.Sum(ci => (ci.Product != null ? ci.Product.Price * ci.Quantity : 0m));
+			}
+			<strong class="me-3">总计：¥@total.ToString("F2")</strong>
+			<form asp-controller="Orders" asp-action="Create" method="post" class="d-inline-block">
+				@Html.AntiForgeryToken()
+				<button type="submit" class="btn btn-success btn-sm">结算</button>
+			</form>
+		</div>
+	</div>
+
+
+
+
+
+
+
+}

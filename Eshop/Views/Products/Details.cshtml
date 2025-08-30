@@ -1,0 +1,43 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model Eshop.Models.Product
+
+@{
+	ViewData["Title"] = "商品详情";
+}
+
+<div class="row g-4">
+	<div class="col-12 col-md-6">
+		@if (!string.IsNullOrEmpty(Model.ImageUrl))
+		{
+			<img class="img-fluid rounded shadow-sm" src="@Model.ImageUrl" alt="@Model.Name" />
+		}
+		else
+		{
+			<img class="img-fluid rounded shadow-sm" src="~/image/placeholder.png" alt="placeholder" />
+		}
+	</div>
+	<div class="col-12 col-md-6">
+		<div class="d-flex justify-content-between align-items-center mb-3">
+			<h2 class="mb-0">@Model.Name</h2>
+			<a asp-action="Index" class="btn btn-outline-secondary">返回</a>
+		</div>
+		
+		<p class="fs-4 text-danger fw-semibold">¥@Model.Price.ToString("F2")</p>
+		<p class="text-muted">库存：@Html.Raw(Model.Stock)</p>
+		<p>@Model.Description</p>
+		<div class="d-flex gap-2 mt-3">
+			
+			<form asp-controller="Cart" asp-action="AddToCart" method="post" class="d-flex gap-2">
+				@Html.AntiForgeryToken()
+				<input type="hidden" name="productId" value="@Model.Id" />
+				<input type="number" class="form-control" style="width:100px;" name="quantity" value="1" min="1" max="@Model.Stock" />
+				<button type="submit" class="btn btn-primary">加入购物车</button>
+			</form>
+			
+		</div>
+		
+	</div>
+</div>

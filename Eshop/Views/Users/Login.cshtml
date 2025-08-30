@@ -1,0 +1,34 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model Eshop.Models.User
+
+@{
+	ViewData["Title"] = "登录";
+}
+
+<div class="row justify-content-center">
+	<div class="col-12 col-md-8 col-lg-5">
+		<div class="card shadow-sm card-form">
+			<div class="card-body">
+				<h2 class="card-title h4 mb-3">用户登录</h2>
+				<form asp-action="Login" method="post" novalidate>
+					@Html.AntiForgeryToken()
+					<div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+					<div class="mb-3">
+						<label class="form-label form-label-required" for="username">用户名</label>
+						<input class="form-control" id="username" name="username" autocomplete="username" />
+					</div>
+					<div class="mb-3">
+						<label class="form-label form-label-required" for="password">密码</label>
+						<input class="form-control" id="password" name="password" type="password" autocomplete="current-password" />
+					</div>
+					<div class="d-grid">
+						<button type="submit" class="btn btn-primary">登录</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

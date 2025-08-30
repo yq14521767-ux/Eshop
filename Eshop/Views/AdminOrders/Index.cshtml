@@ -1,0 +1,75 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model IEnumerable<Eshop.Models.Order>
+
+@{
+	ViewData["Title"] = "订单管理";
+}
+
+<h2>订单管理</h2>
+
+<form method="get" class="row g-2 mb-3">
+	<div class="col-auto">
+		<input type="text" name="username" class="form-control" placeholder="用户名" />
+	</div>
+	<div class="col-auto">
+		<select name="status" class="form-select">
+			<option value="">全部状态</option>
+			@foreach(var s in Enum.GetValues(typeof(Eshop.Models.OrderStatus)))
+			{
+				<option value="@s">@s</option>
+			}
+		</select>
+	</div>
+</form>
+
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<th>订单号</th>
+			<th>用户</th>
+			<th>下单时间</th>
+			<th>总金额</th>
+			<th>状态</th>
+			<th>操作</th>
+			<th>查看</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		@foreach(var o in Model)
+		{
+			<tr>
+				<td>@o.Id</td>
+				<td>@o.User.UserName</td>
+				<td>@o.OrderDate.ToString("yyyy-MM-dd HH:mm")</td>
+				<td>@o.TotalAmount</td>
+				<td>@o.Status</td>
+				<td>
+					<form asp-controller="AdminOrders" asp-action="UpdateStatus" method="post" style="display:inline">
+						<input type="hidden" name="id" value="@o.Id" />
+						<select name="newStatus" onchange="this.form.submit()" class="form-select form-select-sm">
+							@foreach(var s in Enum.GetValues(typeof(Eshop.Models.OrderStatus)))
+							{
+								<option value="@s" selected="@(s.Equals(o.Status) ? "select":null )">
+									@s
+								</option>
+							}
+						</select>
+					</form>
+				</td>
+
+				<td>
+					<a class="btn btn-info btn-sm"
+					   asp-controller="AdminOrders"
+					   asp-action="Details"
+					   asp-route-id="@o.Id">详情
+				   </a>
+				</td>
+			</tr>
+		}
+	</tbody>
+
+</table>
