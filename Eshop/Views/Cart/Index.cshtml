@@ -10,6 +10,15 @@
 
 <div class="page-header">
 	<h2 class="m-0">🛒 我的购物车</h2>
+	<form method="get" asp-action="Index" class="d-flex align-items-center">
+		<input type="text"
+			   name="search"
+			   class="form-control form-control-sm border border-gray-300 rounded"
+			   placeholder="搜索商品..."
+			   value="@ViewBag.Search"
+			   style="width: 220px;" />
+		<button type="submit" class="btn btn-sm btn-light border border-gray-300 ms-2 px-3">搜索</button>
+	</form>
 </div>
 
 @if (TempData["Error"] != null)

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Eshop.Data;
-using Eshop.Models;  // 引入数据初始化类
+//using Eshop.Data;
+//using Eshop.Models;  // 引入数据初始化类
 
 namespace Eshop
 {
@@ -56,13 +56,13 @@ namespace Eshop
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
-            // 迁移并初始化数据库
-            using (var scope = app.Services.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                context.Database.Migrate();
-                DbInitializer.Initialize(context);  // 调用数据初始化方法
-            }
+            //// 迁移并初始化数据库
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            //    context.Database.Migrate();
+            //    DbInitializer.Initialize(context);  // 调用数据初始化方法
+            //}
 
             app.Run();
         }

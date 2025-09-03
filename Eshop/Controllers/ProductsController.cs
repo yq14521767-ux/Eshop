@@ -5,7 +5,7 @@ using X.PagedList;
 
 namespace Eshop.Controllers
 {
-    public class ProductsController : Controller  //产品控制器
+    public class ProductsController : Controller 
     {
         private readonly AppDbContext _context;
 
@@ -15,7 +15,7 @@ namespace Eshop.Controllers
         }
 
         //商品列表
-        public async Task<IActionResult> Index(int? page,string search = null,int pageSize = 8)  // 异步方法，返回商品列表视图
+        public async Task<IActionResult> Index(int? page,string search = null,int pageSize = 8)  
         {
             int pageNum = (page ?? 1); //page若为空，就默认第1页
             if(pageNum < 1) pageNum = 1;

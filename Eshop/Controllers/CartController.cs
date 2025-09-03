@@ -16,7 +16,7 @@ namespace Eshop.Controllers
         }
 
         //显示购物车
-        public async Task<IActionResult> Index(string? search)
+        public async Task<IActionResult> Index(string search = null)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null)
@@ -40,7 +40,7 @@ namespace Eshop.Controllers
             if (!string.IsNullOrEmpty(search))
             {
                 cart.CartItems = cart.CartItems
-                    .Where(ci => ci.Product !=null && ci.Product.Name.Contains(search))
+                    .Where(ci =>ci.Product.Name.Contains(search)) // ci.Product !=null && 
                     .ToList();
             }
 

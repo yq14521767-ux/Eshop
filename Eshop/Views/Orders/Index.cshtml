@@ -12,24 +12,44 @@
 	<h2 class="m-0">我的订单</h2>
 </div>
 
-<form asp-action="Index" method="get" class="mb-3">
-	<div>
-		<label>状态：</label>
-		<select name="status">
-			<option value="All">全部</option>
-			<option value="待付款">待付款</option>
-			<option value="待发货">待发货</option>
-			<option value="待收货">待收货</option>
-			<option value="已收货">已收货</option>
-			<option value="已取消">已取消</option>
-		</select>
+<form asp-action="Index" method="get" class="mb-4 p-3 border rounded-3 shadow-sm bg-light">
+    <div class="row g-3 align-items-center">
+        <div class="col-auto">
+            <label for="status" class="col-form-label fw-medium">状态：</label>
+        </div>
+        <div class="col-auto">
+            <select name="status" id="status" class="form-select form-select-sm w-auto">
+                <option value="All">全部</option>
+                <option value="待付款">待付款</option>
+                <option value="待发货">待发货</option>
+                <option value="待收货">待收货</option>
+                <option value="已收货">已收货</option>
+                <option value="已取消">已取消</option>
+            </select>
+        </div>
 
-		<label>时间：</label>
-		<input type="date" name="startDate" />
-		<input type="date" name="endDate" />
+        <!-- 开始日期 -->
+        <div class="col-auto">
+            <label for="startDate" class="col-form-label fw-medium">时间：</label>
+        </div>
+        <div class="col-auto">
+            <input type="date" name="startDate" id="startDate" class="form-control form-control-sm">
+        </div>
 
-		<button type="submit">筛选订单</button>
-	</div>
+        <!-- 结束日期 -->
+        <div class="col-auto">
+            <span class="text-muted">至</span>
+        </div>
+        <div class="col-auto">
+            <input type="date" name="endDate" id="endDate" class="form-control form-control-sm">
+        </div>
+
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary btn-sm">
+                <i class="bi bi-filter"></i> 筛选订单
+            </button>
+        </div>
+    </div>
 </form>
 
 <table class="table table-hover table-bordered align-middle">
