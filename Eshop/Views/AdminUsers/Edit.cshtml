@@ -31,7 +31,8 @@
 
 					<div class="mb-3">
 						<label class="form-label" for="password">新密码</label>
-						<input id="password" name="password" class="form-control" type="password" autocomplete="new-password" />
+						<input class="form-control" type="password" asp-for="Password" autocomplete="new-password" />
+						<span class="text-danger" asp-validation-for="Password"></span>
 					</div>
 
 					<div class="d-grid gap-2 d-sm-flex">

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Eshop.Models
 {
@@ -8,11 +9,18 @@ namespace Eshop.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "请输入用户名")]
-        [StringLength(20, ErrorMessage = "用户名不可超过20个字符")]
-        public string UserName { get; set; } = string.Empty;
+        [StringLength(12, MinimumLength = 6, ErrorMessage = "用户名长度不能少于6位")]
+        [RegularExpression(@"^[A-Za-z0-9]+$", ErrorMessage = "用户名只能包含字母和数字")]
+        public string UserName { get; set; } = string.Empty; //设置一个初始的空字符串值，避免属性默认值为 null
+
+        [Required(ErrorMessage = "请输入密码")]
+        [StringLength(20, MinimumLength = 6, ErrorMessage = "密码长度必须在6-20位之间")]
+        [DataType(DataType.Password)]//标记属性为密码类型
+        [NotMapped] // 不存到数据库
+        public string Password { get; set; } = string.Empty;
 
         [Required]
-        [ValidateNever]
+        [ValidateNever]  //不验证该属性
         public byte[] PasswordHash { get; set; } = Array.Empty<byte>();
 
         [Required]

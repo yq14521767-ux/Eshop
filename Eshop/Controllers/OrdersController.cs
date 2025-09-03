@@ -15,13 +15,53 @@ namespace Eshop.Controllers
             _context = context;
         }
 
+        //查看all订单
+        public async Task<IActionResult> Index(string status,DateTime? startDate,DateTime? endDate)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Users");
+            }
+
+            var orders =  _context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+                .Where(o => o.UserId == userId.Value)
+                .AsQueryable();
+
+            //按状态筛选
+            if (!string.IsNullOrEmpty(status) && status!= "All")
+            {
+                if(Enum.TryParse<OrderStatus>(status,out var parsedStatus))
+                {
+                    orders = orders.Where(o => o.Status == parsedStatus);
+                }
+            }
+            //按时间筛选
+            if (startDate.HasValue)
+            {
+                orders = orders.Where(o => o.OrderDate >= startDate.Value);
+            }
+            if (endDate.HasValue)
+            {
+                orders = orders.Where(o => o.OrderDate <= endDate.Value);
+            }
+
+            var ordersQ = await orders.OrderBy(o => o.OrderDate)
+                .ToListAsync();
+
+            return View(orders);
+        }
+
         //下单
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create()
         {
             var userId=HttpContext.Session.GetInt32("UserId");
-            //if (userId == null) return RedirectToAction("Login", "Users");
+            if (userId == null) return RedirectToAction("Login", "Users");
 
             var cart = await _context.Carts
                 .Include(c => c.CartItems)
@@ -31,7 +71,7 @@ namespace Eshop.Controllers
             // 检查购物车是否存在且不为空
             if (cart == null || !cart.CartItems.Any())
             {
-                TempData["Error"] = "购物车为空，无法下单！";
+                TempData["Error"] = "购物车为空！";
                 return RedirectToAction("Index", "Cart");
             }
 
@@ -62,31 +102,12 @@ namespace Eshop.Controllers
 
             _context.Orders.Add(order);  // 添加订单到数据库
 
-            _context.CartItems.RemoveRange(cart.CartItems);  // 清空购物车项
+            _context.CartItems.RemoveRange(cart.CartItems);  // 清空已选择的购物车项
 
             await _context.SaveChangesAsync();  // 保存更改到数据库
 
             //return RedirectToAction("Details", new { id = order.Id }); // 重定向到订单详情
             return RedirectToAction("Index","Orders");
-        }
-
-        //查看all订单
-        public async Task<IActionResult> Index()
-        {
-            var userId = HttpContext.Session.GetInt32("UserId");
-
-            if (userId == null)
-            {
-                return RedirectToAction("Login", "Users");
-            }
-
-            var orders = await _context.Orders
-                .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product)
-                .Where(o => o.UserId == userId.Value)
-                .ToListAsync();
-
-            return View(orders); 
         }
 
         //查看订单详情
@@ -138,6 +159,19 @@ namespace Eshop.Controllers
             {
                 order.Status = OrderStatus.待发货; // 更新订单状态为已收货
                 await _context.SaveChangesAsync(); // 保存更改到数据库
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> DeleteO(int id)
+        {
+            var order = await _context.Orders.FindAsync(id);
+
+            if (order != null)
+            {
+                _context.Orders.Remove(order);
+                await _context.SaveChangesAsync();
             }
 
             return RedirectToAction("Index");

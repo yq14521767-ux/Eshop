@@ -1,7 +1,8 @@
-﻿using Eshop.Filters;
+using Eshop.Filters;
 using Eshop.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using X.PagedList;
 
 namespace Eshop.Controllers.Admin
 {
@@ -15,9 +16,29 @@ namespace Eshop.Controllers.Admin
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page,string search = null,int pageSize = 10)
         {
-            return View(await _context.Products.ToListAsync());
+            int pageNum = (page ?? 1);
+            if(page <  1) pageNum = 1;
+
+            var products = _context.Products.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                products = products.Where(p => p.Name.Contains(search));
+            }
+
+            var totalCount = await products.CountAsync();
+
+            var items = await products.OrderBy(p => p.Id)
+                .Skip((pageNum - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var pagedList = new StaticPagedList<Product>(items,pageNum,pageSize,totalCount);
+
+            ViewBag.Search = search;
+            return View(pagedList);
         }
 
         public async Task<IActionResult> Create()

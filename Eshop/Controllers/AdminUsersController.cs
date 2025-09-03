@@ -3,6 +3,7 @@ using Eshop.Models;
 using Eshop.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using X.PagedList;
 
 namespace Eshop.Controllers.Admin
 {
@@ -18,9 +19,29 @@ namespace Eshop.Controllers.Admin
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page,string? search,int pageSize = 10)
         {
-            return View(await _context.Users.ToListAsync());
+            var pageNum = (page ?? 1);
+            if(pageNum < 1) pageNum = 1;
+
+            var users = _context.Users.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                users = users.Where(u => u.UserName.Contains(search));
+            }
+
+            var totalCount = await users.CountAsync();
+
+            var items = await users.OrderBy( u => u.Id)
+                .Skip((pageNum-1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var usersList = new StaticPagedList<User>(items,pageNum,pageSize,totalCount);
+
+            ViewBag.Search =search;
+            return View(usersList);
         }
 
         public async Task<IActionResult> Edit(int id)
@@ -33,12 +54,12 @@ namespace Eshop.Controllers.Admin
             return View(user);
         }
         [HttpPost]
-        public async Task<IActionResult> Edit(User user,string password)
+        public async Task<IActionResult> Edit(User user)
         {
             if (ModelState.IsValid)
             {
                 //生成密码哈希 + 盐
-                PasswordHelper.CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
+                PasswordHelper.CreatePasswordHash(user.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
                 user.PasswordHash = passwordHash;
                 user.PasswordSalt = passwordSalt;
@@ -67,9 +88,9 @@ namespace Eshop.Controllers.Admin
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(User user,string password)
+        public async Task<IActionResult> Create(User user)
         {
-            if (string.IsNullOrWhiteSpace(password)) //检查密码是否为空或输入的空字符
+            if (string.IsNullOrWhiteSpace(user.Password)) //检查密码是否为空或输入的空字符
             {
                 ModelState.AddModelError("password", "请输入密码");
             }
@@ -85,7 +106,7 @@ namespace Eshop.Controllers.Admin
                 try
                 {
                     //生成密码哈希 + 盐
-                    PasswordHelper.CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
+                    PasswordHelper.CreatePasswordHash(user.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
                     user.PasswordHash = passwordHash;
                     user.PasswordSalt = passwordSalt;

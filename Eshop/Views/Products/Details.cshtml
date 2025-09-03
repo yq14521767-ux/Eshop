@@ -34,6 +34,8 @@
 				@Html.AntiForgeryToken()
 				<input type="hidden" name="productId" value="@Model.Id" />
 				<input type="number" class="form-control" style="width:100px;" name="quantity" value="1" min="1" max="@Model.Stock" />
+				<input type="hidden" name="page" value="@(ViewBag.CurrentPage ?? 1)" />
+				<input type="hidden" name="search" value="@ViewBag.Search" />
 				<button type="submit" class="btn btn-primary">加入购物车</button>
 			</form>
 			

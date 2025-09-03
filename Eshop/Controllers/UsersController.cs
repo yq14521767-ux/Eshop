@@ -18,23 +18,21 @@ namespace Eshop.Controllers
         }
 
         //注册
+        //用于处理get
         public IActionResult Register()
         {
             return View();
         }
-
+        //用于处理post
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(User user,string password)
+        public async Task<IActionResult> Register(User user)
         {
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                ModelState.AddModelError("password", "请输入密码");
-            }
+            
 
             if (ModelState.IsValid)
             {
-                if(await _context.Users.AnyAsync(u=> u.UserName == user.UserName))
+                if (await _context.Users.AnyAsync(u => u.UserName == user.UserName))
                 {
                     ModelState.AddModelError("UserName", "用户名已存在");
                     return View(user);
@@ -43,9 +41,9 @@ namespace Eshop.Controllers
                 try
                 {
                     //生成密码哈希 + 盐
-                    PasswordHelper.CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
+                    PasswordHelper.CreatePasswordHash(user.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
-                    user.PasswordHash = passwordHash; 
+                    user.PasswordHash = passwordHash;
                     user.PasswordSalt = passwordSalt;
 
                     _context.Users.Add(user);
@@ -75,7 +73,7 @@ namespace Eshop.Controllers
                         _logger.LogWarning("注册校验失败 字段: {Field}, 错误: {Error}", kv.Key, err.ErrorMessage);
                     }
                 }
-                ModelState.AddModelError(string.Empty, "请修正表单中的错误后再提交。");
+                //ModelState.AddModelError(string.Empty, "请修正表单中的错误后再提交。");
             }
             return View(user);
         }

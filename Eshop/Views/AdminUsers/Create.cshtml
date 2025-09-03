@@ -28,7 +28,8 @@
 					</div>
 					<div class="mb-3">
 						<label class="form-label form-label-required" for="password">密码</label>
-						<input id="password" name="password" type="password" class="form-control" autocomplete="new-password" />
+						<input class="form-control" type="password" asp-for="Password" autocomplete="new-password" />
+						<span class="text-danger" asp-validation-for="Password"></span>
 					</div>
 					<div class="d-grid gap-2 d-sm-flex">
 						<button asp-controller="AdminUsers" asp-action="Create" type="submit" class="btn btn-primary">添加</button>

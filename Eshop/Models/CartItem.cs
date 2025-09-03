@@ -12,5 +12,7 @@
         public Product Product { get; set; } // 商品对象
 
         public int Quantity { get; set; } // 商品数量
+
+        public bool IsSelected { get; set; } = true;
     }
 }

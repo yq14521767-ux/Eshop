@@ -16,10 +16,10 @@ namespace Eshop.Controllers
         }
 
         //显示购物车
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? search)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
-            if(userId == null)
+            if (userId == null)
             {
                 return RedirectToAction("Login", "Users");
             }
@@ -31,12 +31,22 @@ namespace Eshop.Controllers
 
             if (cart == null)
             {
-                cart =new Cart { UserId = userId.Value };
+                cart = new Cart { UserId = userId.Value };
                 _context.Carts.Add(cart);
                 await _context.SaveChangesAsync();
             }
 
-            return View(cart); 
+            //搜索
+            if (!string.IsNullOrEmpty(search))
+            {
+                cart.CartItems = cart.CartItems
+                    .Where(ci => ci.Product !=null && ci.Product.Name.Contains(search))
+                    .ToList();
+            }
+
+            ViewBag.Search = search;    
+            return View(cart);
+
         }
 
         //加入购物车
@@ -46,7 +56,7 @@ namespace Eshop.Controllers
         {
             var userId = HttpContext.Session.GetInt32("UserId");
 
-            if(userId == null)
+            if (userId == null)
             {
                 return RedirectToAction("Login", "Users");
             }
@@ -84,15 +94,15 @@ namespace Eshop.Controllers
             TempData["Success"] = "已加入购物车"; // 设置成功消息
             //ViewBag.Success = "已加入购物车"; 
 
-            await _context.SaveChangesAsync(); 
-            return RedirectToAction("Index","Products"); // 重定向到购物车页面
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index", "Products"); // 重定向到购物车页面
         }
 
         //从购物车中删除商品
         public async Task<IActionResult> RemoveFromCart(int itemId)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
-            if(userId == null)
+            if (userId == null)
             {
                 return RedirectToAction("Login", "Users");
             }

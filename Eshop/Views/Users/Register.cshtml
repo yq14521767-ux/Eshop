@@ -22,8 +22,9 @@
 						<span class="text-danger" asp-validation-for="UserName"></span>
 					</div>
 					<div class="mb-3">
-						<label class="form-label form-label-required" for="password">密码</label>
-						<input class="form-control" id="password" name="password" type="password" autocomplete="new-password" />
+						<label class="form-label form-label-required" asp-for="Password">密码</label>
+						<input class="form-control" type="password" asp-for="Password" autocomplete="new-password" />
+						<span class="text-danger" asp-validation-for="Password"></span>
 					</div>
 					<div class="d-grid">
 						<button type="submit" class="btn btn-primary">注册</button>
